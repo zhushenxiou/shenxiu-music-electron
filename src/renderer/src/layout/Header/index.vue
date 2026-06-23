@@ -1,70 +1,142 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <header>
-    <!-- 页面向前跳转 -->
-    <div class="pageSkip">
-      <el-button :icon="ArrowLeft" circle @click="router.back()" />
+  <header
+    class="h-15 px-4 pt-2 flex items-center justify-between relative z-1000 select-none bg-[--header-bg-color] [-webkit-app-region:drag]"
+  >
+    <!-- logo -->
+    <div
+      class="flex items-center justify-center h-15 cursor-pointer mx-6 [-webkit-app-region:no-drag]"
+    >
+      <span class="text-xl text-center font-black">神秀云音乐</span>
     </div>
-    <!-- 搜索模块 -->
-    <div class="search">
+    <!-- 左侧：前进后退 -->
+    <div class="flex gap-2 mr-3 [-webkit-app-region:no-drag]">
+      <el-button
+        :icon="ArrowLeft"
+        circle
+        class="bg-transparent! border! border-gray-200! text-[#333]! hover:bg-gray-50! hover:border-gray-300! transition-all duration-200"
+        @click="router.back()"
+      />
+      <el-button
+        :icon="ArrowRight"
+        circle
+        class="bg-transparent! border! border-gray-200! text-[#333]! hover:bg-gray-50! hover:border-gray-300! transition-all duration-200"
+        @click="router.forward()"
+      />
+    </div>
+
+    <!-- 搜索模块（拖拽排除） -->
+    <div class="flex-1 max-w-[400px] mr-5 [-webkit-app-region:no-drag]">
       <Search />
     </div>
-    <!-- 登录模块 -->
-    <div class="toLogin">
-      <ToLogin />
+
+    <!-- 右侧：登录 + 窗口控制 -->
+    <div class="flex items-center h-full ml-auto">
+      <div class="mr-3 [-webkit-app-region:no-drag]">
+        <ToLogin />
+      </div>
+      <!-- 窗口控制按钮 -->
+      <div class="flex h-full">
+        <button
+          title="最小化"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
+          @click="minimize"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <rect y="5.5" width="12" height="1" fill="currentColor" />
+          </svg>
+        </button>
+        <button
+          :title="isMaximized ? '还原' : '最大化'"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
+          @click="toggleMaximize"
+        >
+          <svg v-if="!isMaximized" width="12" height="12" viewBox="0 0 12 12">
+            <rect
+              x="1"
+              y="1"
+              width="10"
+              height="10"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <svg v-else width="12" height="12" viewBox="0 0 12 12">
+            <rect
+              x="2.5"
+              y="0.5"
+              width="8"
+              height="8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+            <rect
+              x="0.5"
+              y="2.5"
+              width="8"
+              height="8"
+              fill="var(--header-bg-color)"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+        </button>
+        <button
+          title="关闭"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-[#e81123] hover:text-white"
+          @click="closeWin"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.3" />
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import Search from './components/Search.vue'
 import ToLogin from './components/ToLogin.vue'
 
 const router = useRouter()
+const isMaximized = ref(false)
+
+function minimize(): void {
+  window.electron.ipcRenderer.send('window:minimize')
+}
+
+function toggleMaximize(): void {
+  window.electron.ipcRenderer.send('window:maximize')
+}
+
+function closeWin(): void {
+  window.electron.ipcRenderer.send('window:close')
+}
+
+function onMaximizeChange(_event: unknown, maximized: boolean): void {
+  isMaximized.value = maximized
+}
+
+onMounted(async () => {
+  isMaximized.value = await window.electron.ipcRenderer.invoke('window:isMaximized')
+  window.electron.ipcRenderer.on('window:maximize-change', onMaximizeChange)
+})
+
+onUnmounted(() => {
+  window.electron.ipcRenderer.removeAllListeners('window:maximize-change')
+})
 </script>
 
-<style lang="less" scoped>
-header {
-  height: 60px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background: var(--header-bg-color);
-  padding: 0 40px;
-  position: relative;
-  z-index: 1000;
-
-  .pageSkip {
-    margin-right: 12px;
-
-    .el-button {
-      background: transparent;
-      border: 1px solid #e5e7eb;
-      color: #333;
-      transition: all 0.2s;
-
-      &:hover {
-        background: #f9fafb;
-        border-color: #d1d5db;
-      }
-
-      :deep(svg) {
-        width: 1.2em;
-        height: 1.2em;
-      }
-    }
-  }
-
-  .search {
-    flex: 1;
-    max-width: 400px;
-    margin-right: 20px;
-  }
-
-  .toLogin {
-    margin-left: auto;
-  }
+<style scoped>
+/* element-plus 图标穿透：Tailwind [&_svg] 无法穿透组件边界，需用 :deep() */
+.el-button :deep(svg) {
+  width: 1.2em;
+  height: 1.2em;
 }
 </style>

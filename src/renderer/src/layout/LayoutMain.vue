@@ -1,35 +1,31 @@
 <template>
-  <el-container class="layout">
-    <!-- 固定侧边栏 -->
-    <el-aside class="fixed-aside">
-      <Aside />
-    </el-aside>
+  <div class="layout">
+    <!-- 第一行：顶部 header 独占一行 -->
+    <Header />
 
-    <!-- 右侧内容区域 -->
-    <el-container class="right-container">
-      <!-- 固定头部 -->
-      <el-header class="fixed-header">
-        <Header />
-      </el-header>
+    <!-- 第二行：左侧 aside + 右侧 main -->
+    <div class="body-row">
+      <aside class="layout-aside">
+        <Aside />
+      </aside>
 
-      <!-- 可滚动主内容 -->
-      <el-main class="scrollable-main">
+      <main class="layout-main">
         <RouterView v-slot="{ Component }" :key="route.fullPath">
           <transition name="fade">
             <component :is="Component" />
           </transition>
         </RouterView>
-      </el-main>
-    </el-container>
+      </main>
+    </div>
 
     <!-- 固定底部播放器 -->
-    <el-footer class="fixed-footer">
+    <footer class="layout-footer">
       <FootPlayer />
-    </el-footer>
+    </footer>
 
-    <!-- 回到顶部按钮，对于滚动刷新的页面，需要对应页面单独配置el-backtop的target -->
-    <el-backtop target=".scrollable-main" :bottom="120"></el-backtop>
-  </el-container>
+    <!-- 回到顶部按钮 -->
+    <el-backtop target=".layout-main" :bottom="120"></el-backtop>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -42,55 +38,47 @@ const route = useRoute()
 
 <style lang="less">
 .layout {
-  // 固定侧边栏
-  .fixed-aside {
-    position: fixed;
-    top: 0;
-    left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // --- 第一行：header ---
+
+  // --- 第二行：aside + main ---
+  .body-row {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    margin-top: 0;
+  }
+
+  .layout-aside {
     width: 12rem;
-    height: 100vh;
+    flex-shrink: 0;
+    height: 100%;
     overflow-y: auto;
-    z-index: 1000;
     border-right: 1px solid #e4e7ed;
   }
 
-  // 右侧内容区域
-  .right-container {
-    margin-left: 12rem; // 避开侧边栏
-    width: calc(100% - 12rem);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  // 固定头部样式
-  .fixed-header {
-    position: static;
-    height: 60px;
-    z-index: 1000;
-    padding: 0;
-  }
-
-  // 可滚动主内容
-  .scrollable-main {
-    height: calc(100vh - 130px); // 总高度减去头部(60px)和底部(70px)
+  .layout-main {
+    flex: 1;
+    height: 100%;
     overflow-y: auto;
     padding: 16px;
-    padding-bottom: 80px; // 额外增加底部内边距，确保内容不被底部播放器遮挡
-    margin: 0;
-    width: 100%;
+    padding-bottom: 86px; // 避开底部播放器
     background: #f7f9fc;
   }
 
-  // 固定底部
-  .fixed-footer {
+  // --- 固定底部播放器 ---
+  .layout-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 70px;
     z-index: 1100;
-    padding: 0;
   }
 }
 </style>

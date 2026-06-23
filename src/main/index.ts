@@ -6,9 +6,10 @@ import icon from '../../resources/icon.png?asset'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -16,6 +17,21 @@ function createWindow(): void {
       sandbox: false
     }
   })
+
+  // 窗口控制 IPC
+  ipcMain.on('window:minimize', () => mainWindow.minimize())
+  ipcMain.on('window:maximize', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  })
+  ipcMain.on('window:close', () => mainWindow.close())
+  ipcMain.handle('window:isMaximized', () => mainWindow.isMaximized())
+
+  mainWindow.on('maximize', () => mainWindow.webContents.send('window:maximize-change', true))
+  mainWindow.on('unmaximize', () => mainWindow.webContents.send('window:maximize-change', false))
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

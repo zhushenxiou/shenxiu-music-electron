@@ -1,9 +1,5 @@
 <template>
   <aside class="w-full h-full bg-[--aside-bg-color]">
-    <!-- logo -->
-    <div class="flex items-center justify-center h-[60px] cursor-pointer mx-6">
-      <span class="text-xl text-center font-black">神秀云音乐</span>
-    </div>
     <!-- 菜单组件 -->
     <el-menu :default-active="activeMenu">
       <el-menu-item
