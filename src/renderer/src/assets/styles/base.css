@@ -2,11 +2,15 @@
 @import './var.css';
 @import './element-custom.css';
 
-/* 全局重置样式 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* 全局重置样式
+   必须放在 @layer base 中，否则无层级样式的优先级会高于 Tailwind 的 utilities 层，
+   导致 px-*、py-* 等工具类被 * { padding: 0 } 覆盖 */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 li {
