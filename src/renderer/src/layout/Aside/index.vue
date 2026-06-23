@@ -26,7 +26,7 @@ import IconDiscover from '@/assets/icon/IconDiscover.vue'
 import IconVideo from '@/assets/icon/IconVideo.vue'
 import IconMusic from '@/assets/icon/IconMusic.vue'
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, unknown> = {
   discover: IconDiscover,
   video: IconVideo,
   music: IconMusic

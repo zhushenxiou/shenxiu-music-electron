@@ -5,14 +5,28 @@
       <span @click="loginDialogIsVisible = true">点击登录</span>
     </div>
     <!-- 登录时展示 -->
-    <div v-if="cookie" class="userInfo" @click="toUserDetails">
-      <!-- 用户头像 -->
-      <img :src="accountInfo.avatarUrl" alt="" />
-      <!-- 用户名称 -->
-      <span>{{ accountInfo.nickname }}</span>
+    <div v-if="cookie" class="flex gap-5" @click="toUserDetails">
+      <!-- 用户信息 -->
+      <div
+        class="cursor-pointer flex items-center gap-2"
+        @click="$router.push('/userDetails' + '/' + userStore.userInfo.userId)"
+      >
+        <img :src="accountInfo.avatarUrl" alt="用户头像" />
+        <!-- 用户名称 -->
+        <span>{{ accountInfo.nickname }}</span>
+      </div>
       <!-- 退出登录 -->
-      <div v-if="cookie" class="quit">
-        <el-button :icon="SwitchButton" circle size="large" @click="quitDialogIsVisible = true" />
+      <div v-if="cookie">
+        <el-popconfirm
+          title="请问是否确认退出登录？"
+          confirm-button-text="确定"
+          cancel-button-text="取消"
+          @confirm="toLogout"
+        >
+          <template #reference>
+            <el-button plain size="large">退出登录</el-button>
+          </template>
+        </el-popconfirm>
       </div>
     </div>
     <!-- 登录页面弹窗 -->
@@ -32,31 +46,12 @@
       ></Login>
     </el-dialog>
   </div>
-
-  <!-- 退出登录弹窗 -->
-  <el-dialog
-    v-model="quitDialogIsVisible"
-    title="退出登录"
-    width="250px"
-    :center="true"
-    :modal="false"
-    :draggable="true"
-  >
-    <span class="quitHint">请问是否确认退出登录</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button type="danger" @click="toLogout">确定</el-button>
-        <el-button @click="quitDialogIsVisible = false">取消</el-button>
-      </span>
-    </template>
-  </el-dialog>
 </template>
 
 <script lang="ts" setup>
 import { getAccountInfoApi, logoutApi } from '@/api/login'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
-import { SwitchButton } from '@element-plus/icons-vue'
 import { computed, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import Login from '@/components/Login/index.vue'
@@ -64,9 +59,6 @@ import Login from '@/components/Login/index.vue'
 const userStore = useUserStore()
 
 const loginDialogIsVisible = ref(false)
-const quitDialogIsVisible = ref(false)
-const loginRef = ref(null)
-
 // 处理弹窗关闭事件
 function closeDialog() {
   loginDialogIsVisible.value = false
@@ -81,8 +73,6 @@ async function toLogout() {
     // 清空cookie token
     localStorage.removeItem('cookie')
     localStorage.removeItem('token')
-    // 关闭弹窗
-    quitDialogIsVisible.value = false
   }
   // 刷新页面
   router.go(0)
@@ -147,20 +137,6 @@ getAccountInfo()
       color: black;
       font-family: '等线';
       font-size: 15px;
-    }
-  }
-
-  .userInfo {
-    cursor: pointer;
-  }
-
-  .quit {
-    margin: 0 20px;
-
-    .el-button {
-      background-color: #eee;
-      color: white;
-      border: 0;
     }
   }
 }

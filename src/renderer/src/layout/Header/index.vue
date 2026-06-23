@@ -42,55 +42,22 @@
           class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
           @click="minimize"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect y="5.5" width="12" height="1" fill="currentColor" />
-          </svg>
+          <IconMinimize />
         </button>
         <button
           :title="isMaximized ? '还原' : '最大化'"
           class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
           @click="toggleMaximize"
         >
-          <svg v-if="!isMaximized" width="12" height="12" viewBox="0 0 12 12">
-            <rect
-              x="1"
-              y="1"
-              width="10"
-              height="10"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.2"
-            />
-          </svg>
-          <svg v-else width="12" height="12" viewBox="0 0 12 12">
-            <rect
-              x="2.5"
-              y="0.5"
-              width="8"
-              height="8"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.2"
-            />
-            <rect
-              x="0.5"
-              y="2.5"
-              width="8"
-              height="8"
-              fill="var(--header-bg-color)"
-              stroke="currentColor"
-              stroke-width="1.2"
-            />
-          </svg>
+          <IconMaximize v-if="!isMaximized" />
+          <IconRestore v-else />
         </button>
         <button
           title="关闭"
           class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-[#e81123] hover:text-white"
           @click="closeWin"
         >
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.3" />
-          </svg>
+          <IconClose />
         </button>
       </div>
     </div>
@@ -103,6 +70,10 @@ import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import Search from './components/Search.vue'
 import ToLogin from './components/ToLogin.vue'
+import IconMinimize from '@/assets/icon/IconMinimize.vue'
+import IconMaximize from '@/assets/icon/IconMaximize.vue'
+import IconRestore from '@/assets/icon/IconRestore.vue'
+import IconClose from '@/assets/icon/IconClose.vue'
 
 const router = useRouter()
 const isMaximized = ref(false)
