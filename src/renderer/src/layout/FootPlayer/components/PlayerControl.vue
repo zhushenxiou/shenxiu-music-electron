@@ -1,35 +1,35 @@
 <template>
   <!-- 歌曲控制 -->
-  <div class="playerControl">
+  <div class="w-[60%] h-full flex flex-col items-center">
     <!-- 控制 -->
-    <div class="control">
+    <div class="w-[60%] h-[60%] flex items-center justify-around">
       <!-- 循环模式 -->
-      <div class="cycleMode" @click="switchLoopMode">
+      <div class="cursor-pointer text-xl" @click="switchLoopMode">
         <IconLoop v-if="loopMode == 'loop'" />
         <IconRandom v-if="loopMode == 'random'" />
         <IconSingleLoop v-if="loopMode == 'cycle'" />
       </div>
       <!-- 收藏 -->
-      <div class="love">
+      <div class="cursor-pointer text-xl">
         <IconCollect />
       </div>
       <!-- 上一首 -->
-      <div class="prev" @click="prevSong">
+      <div class="cursor-pointer text-xl" @click="prevSong">
         <IconPrev />
       </div>
       <!-- 播放/暂停 -->
-      <div id="isPlay" class="isPlay" @click="togglePlay">
+      <div id="isPlay" class="cursor-pointer text-3xl" @click="togglePlay">
         <IconPlay v-if="!store.isPlaying" />
         <IconPause v-else />
       </div>
       <!-- 下一首 -->
-      <div class="next" @click="nextSong">
+      <div class="cursor-pointer text-xl" @click="nextSong">
         <IconNext />
       </div>
       <!-- 音量控制 -->
-      <div class="volume">
+      <div class="flex items-center cursor-pointer w-24">
         <!-- 是否静音 -->
-        <div class="mute" @click="toggleMute">
+        <div class="text-2xl mr-4" @click="toggleMute">
           <IconVolume v-if="!isMute" />
           <IconMute v-else />
         </div>
@@ -38,15 +38,16 @@
       </div>
     </div>
     <!-- 进度条 -->
-    <div class="progressBar">
-      <div class="curTime">{{ curTime }}</div>
+    <div class="w-full h-8 flex items-center gap-3">
+      <div class="text-xs text-[#888]">{{ curTime }}</div>
       <el-slider
-        v-model="store.curDuration"
+        v-model="sliderValue"
         :max="duration"
         :show-tooltip="false"
         @change="changeDuration"
+        @mousedown="isDragging = true"
       />
-      <div class="endTime">{{ endTime }}</div>
+      <div class="text-xs text-[#888]">{{ endTime }}</div>
     </div>
     <!-- 播放音乐的核心组件 autoplay-->
     <audio
@@ -80,10 +81,14 @@ const store = usePlayerStore()
 const audioPlayer = ref()
 // 循环模式 loop random cycle
 const loopMode = ref('loop')
+// 拖动进度条标志（防止 timeupdate 覆盖用户操作）
+const isDragging = ref(false)
+// 本地滑块值，隔离 timeupdate 的覆盖
+const sliderValue = ref(0)
 
-// 当前时间 字符串
+// 当前时间 字符串（跟随滑块值，拖动时不会跳动）
 const curTime = computed(() => {
-  return msToMinSeconed(store.curDuration)
+  return msToMinSeconed(sliderValue.value)
 })
 // 总时间 毫秒
 const duration = computed(() => {
@@ -115,21 +120,19 @@ function togglePlay() {
     return
   }
   store.isPlaying = !store.isPlaying
-  if (store.isPlaying) {
-    audioPlayer.value.play()
-  } else {
-    audioPlayer.value.pause()
-  }
 }
 
-// 拖动进度条
+// 拖动进度条（松开滑块时触发）
 function changeDuration(val: number) {
+  isDragging.value = false
   // 如果有播放音乐
   if (store.curSongUrl) {
     store.curDuration = val
+    sliderValue.value = val
     audioPlayer.value.currentTime = val / 1000
   } else {
     store.curDuration = 0
+    sliderValue.value = 0
     ElMessage.warning('无可播放歌曲，无法进行操作')
   }
 }
@@ -141,7 +144,7 @@ function prevSong() {
     // 如果是第一首的上一首就是最后一首
     store.index = store.index == 0 ? store.playlist.length - 1 : store.index - 1
   } else if (loopMode.value == 'random') {
-    store.index = Math.floor(Math.random() * store.playlist.value.length)
+    store.index = Math.floor(Math.random() * store.playlist.length)
   }
   store.updateCurSong()
 }
@@ -164,6 +167,8 @@ watch(
     // 切换的歌曲，更新为0, 且默认播放
     if (val != oldVal) {
       store.curDuration = 0
+      sliderValue.value = 0
+      isDragging.value = false
       store.isPlaying = true
     }
   }
@@ -188,6 +193,7 @@ function changeVolume(val: number) {
   curVolume.value = val
   audioPlayer.value.volume = val / 100
 }
+
 // 监听是否是静音
 watch(
   () => isMute.value,
@@ -200,84 +206,60 @@ watch(
   }
 )
 
+// 统一控制 audio 播放/暂停，所有地方只需操作 store.isPlaying
+watch(
+  () => store.isPlaying,
+  (playing) => {
+    if (playing) {
+      audioPlayer.value.play()
+    } else {
+      audioPlayer.value.pause()
+    }
+  }
+)
+
+// 监听 store.curDuration 同步到本地滑块（拖动期间不同步）
+watch(
+  () => store.curDuration,
+  (val) => {
+    if (!isDragging.value) {
+      sliderValue.value = val
+    }
+  }
+)
+
 // 播放音乐自动触发
-function timeupdate(e: any) {
-  // 更新歌曲的当前播放时长
-  store.curDuration = e.target.currentTime * 1000
+function timeupdate(e: Event) {
+  const audio = e.target as HTMLAudioElement | null
+  if (audio == null) {
+    return
+  }
+
+  // 拖动进度条时不更新，避免覆盖用户操作
+  if (!isDragging.value) {
+    const val = audio.currentTime * 1000
+    store.curDuration = val
+    sliderValue.value = val // 同步更新，避免 watcher 异步延迟导致 ended 判断滞后
+  }
 
   // 判断歌曲是否为试听歌曲
-  if (e.target.ended && curTime.value < endTime.value) {
+  if (audio.ended && curTime.value < endTime.value) {
     ElMessage.warning('VIP歌曲,试听结束！！！')
     // 暂停播放
     store.isPlaying = false
   }
 
   // 当歌曲播放完毕后，并根据歌曲的循环方式进行操作
-  if (e.target.ended && curTime.value == endTime.value) {
+  if (audio.ended && curTime.value == endTime.value) {
     store.isPlaying = false
     if (loopMode.value == 'cycle') {
       // 单曲循环自动下一首还是本首
-      e.target.currentTime = 0
+      audio.currentTime = 0
       store.curDuration = 0
+      store.isPlaying = true
     } else {
       nextSong()
     }
   }
 }
 </script>
-
-<style lang="less" scoped>
-.playerControl {
-  width: 60%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .control {
-    width: 60%;
-    height: 60%;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-
-    div {
-      cursor: pointer;
-
-      svg {
-        font-size: 20px;
-      }
-    }
-
-    #isPlay i {
-      font-size: 34px;
-    }
-
-    .volume {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      width: 6rem;
-
-      svg {
-        font-size: 24px;
-        margin-right: 1rem;
-      }
-    }
-  }
-
-  .progressBar {
-    width: 90%;
-    height: 40%;
-    display: flex;
-    align-items: center;
-
-    .curTime,
-    .endTime {
-      font-size: 13px;
-      margin: 0 10px;
-      color: #888;
-    }
-  }
-}
-</style>

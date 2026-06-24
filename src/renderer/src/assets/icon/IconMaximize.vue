@@ -7,15 +7,7 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect
-      x="1"
-      y="1"
-      width="10"
-      height="10"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.2"
-    />
+    <rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.2" />
   </svg>
 </template>
 

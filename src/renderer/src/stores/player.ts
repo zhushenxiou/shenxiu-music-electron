@@ -33,13 +33,17 @@ export const usePlayerStore = defineStore('player', () => {
   const curSongUrl = ref('')
   // 歌词 格式：[{ time: 时间戳, lrc: '歌词内容', next: 下一句出现时间戳 }]
   const lyric = ref([{ time: 0, lrc: '暂无歌词', next: 100000 }])
+  // 是否正在播放
   const isPlaying = ref(false)
+  // 当前播放时间（毫秒）
   const curDuration = ref(0)
+  // 是否显示播放列表
   const showPlaylist = ref(false)
+  // 是否显示歌曲详情
   const showSongDetails = ref(false)
 
   // 格式化歌词方法
-  const formatLyric = (lyricStr: string) => {
+  const formatLyric = (lyricStr: string): { time: number; lrc: string; next: number }[] => {
     const lyricArr = lyricStr.split(/[(\r\n)\r\n]+/).map((item: string) => {
       const min = item.slice(1, 3) // 分
       const sec = item.slice(4, 6) // 秒
