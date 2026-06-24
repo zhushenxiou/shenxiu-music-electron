@@ -36,7 +36,7 @@
     </div>
     <!-- 歌曲评论 -->
     <div v-show="store.curSongInfo.id" class="comment">
-      <CComments :id="store.curSongInfo.id" :key="store.curSongInfo.id" :type="'song'" />
+      <CComments :id="String(store.curSongInfo.id)" :key="store.curSongInfo.id" :type="'song'" />
     </div>
   </div>
 </template>
@@ -57,7 +57,7 @@ let timer: number | undefined = undefined
 // 歌词滚动逻辑
 onMounted(() => {
   // 歌词滚动1s刷新一次
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     // 获取播放到的歌词元素
     const p: any = document.querySelector('p.active')
     if (p && p.offsetTop > 300) {

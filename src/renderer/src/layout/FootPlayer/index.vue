@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePlayerStore } from '@/stores/player.ts'
+import { usePlayerStore } from '@/stores/player'
 import Playlist from './components/Playlist.vue'
 import PlayDetails from './components/PlayDetails.vue'
 import PlayerControl from './components/PlayerControl.vue'

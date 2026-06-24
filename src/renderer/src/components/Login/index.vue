@@ -25,8 +25,8 @@
       </div>
 
       <!-- 扫码确认待确认 -->
-      <div class="p-4">
-        <img v-show="QRCodeStateCode === 802" src="./img/waitConfirm.png" alt="" />
+      <div v-show="QRCodeStateCode === 802" class="flex flex-col items-center gap-4">
+        <p class="text-base text-gray-500">请在手机上确认登录</p>
       </div>
     </div>
   </div>

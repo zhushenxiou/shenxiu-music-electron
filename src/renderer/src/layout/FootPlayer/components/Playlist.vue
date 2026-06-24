@@ -40,6 +40,7 @@ function addIndex({ row, rowIndex }: { row: SongType; rowIndex: number }) {
   if (rowIndex === store.index) {
     return 'active'
   }
+  return undefined
 }
 
 function playSong(row: SongType) {

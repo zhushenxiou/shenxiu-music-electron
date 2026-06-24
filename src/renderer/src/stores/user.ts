@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', () => {
   /** 用户ID */
   const uid = ref(0)
   /** 用户信息 */
-  const userInfo = ref({ level: 0, userId: 0 })
+  const userInfo = ref<{ level: number; userId: number }>({ level: 0, userId: 0 })
   /** 创建的歌单 */
   const createdPlaylist = ref<PlaylistType[]>([])
   /** 收藏/订阅的歌单 */
@@ -17,8 +17,10 @@ export const useUserStore = defineStore('user', () => {
   const getUserData = async () => {
     // 获取用户信息
     const info = await userDetailsApi(uid.value)
-    userInfo.value = info.profile
-    userInfo.value.level = info.level
+    userInfo.value = {
+      level: info.level ?? info.profile.level ?? 0,
+      userId: info.profile.userId
+    }
 
     // 获取用户歌单
     const res = await userPlaylistApi(uid.value)
