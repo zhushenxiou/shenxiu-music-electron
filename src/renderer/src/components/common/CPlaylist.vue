@@ -1,12 +1,10 @@
 <template>
   <!-- 封装歌单/专辑列表显示 -->
-  <div
-    class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6"
-  >
+  <div class="w-full grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
     <div
       v-for="item in playlists"
       :key="item.id"
-      class="relative cursor-pointer font-black overflow-hidden transition-transform duration-300 hover:scale-105"
+      class="relative cursor-pointer font-black overflow-hidden rounded-lg"
       @click="toDetailsPage(item.id)"
     >
       <!-- 图片部分 -->
@@ -51,9 +49,13 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { formatPlayCount } from '@/utils/format'
 import { optimizeImageUrl, extractColorFromImage } from '@/utils/img'
+import { PlaylistType } from '@renderer/api/types'
 
 const router = useRouter()
-const { playlists, type } = defineProps(['playlists', 'type'])
+const { playlists, type } = defineProps<{
+  playlists: PlaylistType[]
+  type?: string
+}>()
 
 /** 各歌单/专辑的主题色缓存，key 为 item.id */
 const themeColors = ref<Record<number, string>>({})

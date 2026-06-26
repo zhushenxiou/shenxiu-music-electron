@@ -34,6 +34,83 @@ export interface AlbumType {
 }
 
 /**
+ * 最新专辑（newestAlbumApi 返回的 album 条目）
+ *
+ * 使用场景：发现页"最新专辑"推荐。
+ * 字段适配 CPlaylist 组件展示，`size` 为专辑内歌曲数量。
+ */
+export interface NewestAlbumType {
+  /** 专辑唯一标识 */
+  id: number
+  /** 专辑名称 */
+  name: string
+  /** 专辑类型（如"专辑"） */
+  type: string
+  /** 专辑内歌曲数量 */
+  size: number
+  /** 专辑封面图片 id */
+  picId: number
+  /** 专辑封面图片 URL */
+  picUrl: string
+  /** 专辑高斯模糊封面 */
+  blurPicUrl: string
+  /** 发行公司 id */
+  companyId: number
+  /** 发行公司名称 */
+  company: string
+  /** 发行时间（Unix 时间戳，毫秒） */
+  publishTime: number
+  /** 专辑简介 */
+  description: string
+  /** 标签 */
+  tags: string
+  /** 简短描述 */
+  briefDesc: string
+  /** 专辑歌手信息 */
+  artist: {
+    name: string
+    id: number
+    picId: number
+    img1v1Id: number
+    briefDesc: string
+    picUrl: string
+    img1v1Url: string
+    albumSize: number
+    alias: string[]
+    trans: string
+    musicSize: number
+    topicPerson: number
+  }
+  /** 参演艺人的歌手列表 */
+  artists: Array<{
+    name: string
+    id: number
+    picId: number
+    img1v1Id: number
+    briefDesc: string
+    picUrl: string
+    img1v1Url: string
+    albumSize: number
+    alias: string[]
+    trans: string
+    musicSize: number
+    topicPerson: number
+  }>
+  /** 别名 */
+  alias: string[]
+  /** 状态 */
+  status: number
+  /** 版权 id */
+  copyrightId: number
+  /** 评论线程 id */
+  commentThreadId: string
+  /** 是否付费 */
+  paid: boolean
+  /** 是否在售 */
+  onSale: boolean
+}
+
+/**
  * 歌曲
  *
  * 使用场景：歌单中的曲目、搜索结果中的歌曲、每日推荐等。
@@ -140,21 +217,6 @@ export interface MVType {
   publishTime: string
   /** 视频时长（毫秒） */
   duration?: number
-}
-
-/**
- * Banner 轮播图
- *
- * 使用场景：发现页顶部的轮播广告位。
- * `targetType` 决定点击后跳转目标：1000=歌单，10=专辑，其他暂不支持。
- */
-export interface BannerType {
-  /** 图片地址 */
-  imageUrl: string
-  /** 跳转目标类型：1000=歌单，10=专辑 */
-  targetType: number
-  /** 跳转目标 id */
-  targetId: number
 }
 
 /**

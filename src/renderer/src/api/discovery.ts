@@ -1,18 +1,14 @@
 import request from '../utils/request'
 import type {
-  BannerType,
   PlaylistType,
   TagType,
   ToplistItemType,
   ArtistType,
-  SongType
+  SongType,
+  NewestAlbumType
 } from './types'
 
 // ==================== 响应类型 ====================
-
-export interface BannerResponse {
-  banners: BannerType[]
-}
 
 export interface PersonalizedPlaylistResponse {
   result: PlaylistType[]
@@ -49,16 +45,23 @@ export interface DailyStarSongsResponse {
   }
 }
 
-// ==================== API 函数 ====================
-
-/** 轮播图 */
-export const bannerApi = () => {
-  return request<BannerResponse>({ url: `/banner?type=0`, method: 'GET' })
+export interface NewestAlbumResponse {
+  albums: NewestAlbumType[]
 }
 
+// ==================== API 函数 ====================
+
 /** 推荐歌单 */
-export const personalizedPlaylistApi = () => {
-  return request<PersonalizedPlaylistResponse>({ url: `/personalized?limit=30`, method: 'GET' })
+export const personalizedPlaylistApi = (limit: number) => {
+  return request<PersonalizedPlaylistResponse>({
+    url: `/personalized?limit=${limit}`,
+    method: 'GET'
+  })
+}
+
+/** 最新专辑 */
+export const newestAlbumApi = () => {
+  return request<NewestAlbumResponse>({ url: `/album/newest`, method: 'GET' })
 }
 
 /** 歌单标签列表 */
