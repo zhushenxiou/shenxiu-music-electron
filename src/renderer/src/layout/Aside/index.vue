@@ -1,5 +1,11 @@
 <template>
-  <aside class="w-full h-full bg-[--aside-bg-color]">
+  <aside class="w-full h-full bg-[#f7f9fc]">
+    <!-- logo -->
+    <div
+      class="flex items-center justify-center h-15 cursor-pointer mx-6 [-webkit-app-region:no-drag]"
+    >
+      <span class="text-xl text-center font-black">神秀云音乐</span>
+    </div>
     <!-- 菜单组件 -->
     <el-menu :default-active="activeMenu">
       <el-menu-item
@@ -66,7 +72,7 @@ function selectMenu(menu: { path: string; name: string }) {
 <style lang="less">
 .el-menu {
   width: 100%;
-  background: var(--aside-bg-color);
+  background: #f7f9fc;
   border-right: none !important;
 
   .el-menu-item {

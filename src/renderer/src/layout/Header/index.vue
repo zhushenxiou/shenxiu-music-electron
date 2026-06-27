@@ -1,14 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <header
-    class="h-15 px-4 pt-2 flex items-center justify-between relative z-1000 select-none bg-[--header-bg-color] [-webkit-app-region:drag]"
+    class="h-15 px-4 pt-2 flex items-center justify-between relative z-1000 select-none [-webkit-app-region:drag]"
   >
-    <!-- logo -->
-    <div
-      class="flex items-center justify-center h-15 cursor-pointer mx-6 [-webkit-app-region:no-drag]"
-    >
-      <span class="text-xl text-center font-black">神秀云音乐</span>
-    </div>
     <!-- 左侧：前进后退 -->
     <div class="flex gap-2 mr-3 [-webkit-app-region:no-drag]">
       <el-button
@@ -26,7 +20,7 @@
     </div>
 
     <!-- 搜索模块（拖拽排除） -->
-    <div class="flex-1 max-w-[400px] mr-5 [-webkit-app-region:no-drag]">
+    <div class="flex-1 max-w-100 mr-5 [-webkit-app-region:no-drag]">
       <Search />
     </div>
 
@@ -39,14 +33,14 @@
       <div class="flex h-full">
         <button
           title="最小化"
-          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:text-black"
           @click="minimize"
         >
           <IconMinimize />
         </button>
         <button
           :title="isMaximized ? '还原' : '最大化'"
-          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-black/6"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:text-black"
           @click="toggleMaximize"
         >
           <IconMaximize v-if="!isMaximized" />
@@ -54,7 +48,7 @@
         </button>
         <button
           title="关闭"
-          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:bg-[#e81123] hover:text-white"
+          class="w-12 h-full border-0 bg-transparent text-[#333] cursor-pointer flex items-center justify-center [-webkit-app-region:no-drag] transition-colors duration-150 hover:text-black"
           @click="closeWin"
         >
           <IconClose />
@@ -103,11 +97,3 @@ onUnmounted(() => {
   window.electron.ipcRenderer.removeAllListeners('window:maximize-change')
 })
 </script>
-
-<style scoped>
-/* element-plus 图标穿透：Tailwind [&_svg] 无法穿透组件边界，需用 :deep() */
-.el-button :deep(svg) {
-  width: 1.2em;
-  height: 1.2em;
-}
-</style>

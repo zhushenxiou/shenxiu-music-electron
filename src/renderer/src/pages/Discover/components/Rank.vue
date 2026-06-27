@@ -1,7 +1,7 @@
 <template>
-  <div v-loading="loading" class="rank relative">
+  <div v-loading="loading" class="relative">
     <!-- 官方榜 -->
-    <div class="official mb-4">
+    <div class="mb-4">
       <div
         class="title flex justify-center mb-4 leading-[22px] text-[22px] font-bold cursor-default"
       >
@@ -11,17 +11,17 @@
         <div
           v-for="item in officialToplist"
           :key="item.id"
-          class="item h-[150px] border border-gray-200 rounded-2xl m-4 flex cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105"
+          class="item h-[150px] border border-gray-200 rounded-2xl m-4 flex cursor-pointer"
           @click="toPlaylistDetails(item.id)"
         >
           <!-- 图片 -->
           <el-image :src="item.coverImgUrl" alt="" class="h-full rounded-2xl" />
           <!-- 展示前三首歌 -->
-          <div class="songs h-full w-[70%] ml-2">
+          <div class="h-full w-[70%] ml-2">
             <div
               v-for="(song, index) in item.tracks"
               :key="song.first"
-              class="song h-[33.3%] w-full no-ellipsis"
+              class="h-[33.3%] w-full no-ellipsis"
             >
               <span class="text-xs text-gray-700 ml-2 leading-[3rem]">{{ Number(index) + 1 }}</span>
               <!-- 歌名 -->
@@ -40,19 +40,15 @@
       </div>
     </div>
     <!-- 全球榜 -->
-    <div class="global">
-      <div
-        class="title flex justify-center mb-4 leading-[22px] text-[22px] font-bold cursor-default"
-      >
+    <div class="">
+      <div class="flex justify-center mb-4 leading-[22px] text-[22px] font-bold cursor-default">
         全 球 榜
       </div>
-      <div
-        class="content grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
-      >
+      <div class="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
         <div
           v-for="item in globalToplist"
           :key="item.id"
-          class="item text-center m-4 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105"
+          class="item text-center m-4 cursor-pointer"
           @click="toPlaylistDetails(item.id)"
         >
           <el-image :src="item.coverImgUrl" alt="" class="w-full rounded-2xl">
@@ -62,7 +58,7 @@
               </div>
             </template>
           </el-image>
-          <span class="text-[13px] hover:text-red-500 hover:border-b hover:border-red-500">{{
+          <span class="text-sm hover:text-red-500 hover:border-b hover:border-red-500">{{
             item.name
           }}</span>
         </div>

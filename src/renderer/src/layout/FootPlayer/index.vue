@@ -1,16 +1,17 @@
 <template>
   <!-- 底部栏播放器 -->
-  <div class="player">
+  <div
+    class="flex items-center justify-between w-screen h-[70px] fixed bottom-0 z-99999 py-2 px-4 cursor-default bg-white border-t border-solid border-[#eee]"
+  >
     <!-- 歌曲信息 -->
-    <div class="left" @click="store.showSongDetails = !store.showSongDetails">
-      <div class="img">
-        <el-image :src="store.curSongInfo.al.picUrl">
-          <template #placeholder>
-            <div class="image-slot">加载中<span class="dot">...</span></div>
-          </template>
-        </el-image>
+    <div
+      class="flex shrink-0 items-center cursor-pointer gap-4"
+      @click="store.showSongDetails = !store.showSongDetails"
+    >
+      <div class="w-12 h-12 rounded-full overflow-hidden">
+        <el-image :src="store.curSongInfo.al.picUrl" class="w-full h-full" />
       </div>
-      <div class="name">
+      <div class="text-sm">
         {{ store.curSongInfo.name }}
       </div>
       <!-- 歌曲详情页 -->
@@ -20,17 +21,21 @@
         direction="btt"
         :append-to-body="true"
         :size="'100%'"
+        :z-index="9000"
       >
         <PlayDetails />
       </el-drawer>
     </div>
     <!-- 歌曲控制 -->
-    <div class="center">
+    <div class="w-full h-full flex flex-col items-center">
       <PlayerControl />
     </div>
     <!-- 播放列表 -->
-    <div class="right">
-      <div class="playlist" @click="store.showPlaylist = !store.showPlaylist">
+    <div class="flex items-center">
+      <div
+        class="absolute cursor-pointer right-10"
+        @click="store.showPlaylist = !store.showPlaylist"
+      >
         <el-badge :value="store.playlist.length">
           <IconPlaylist />
         </el-badge>
@@ -40,6 +45,7 @@
           :with-header="false"
           :append-to-body="true"
           :size="320"
+          :z-index="9000"
         >
           <Playlist />
         </el-drawer>
@@ -58,63 +64,3 @@ import IconPlaylist from '@/assets/icon/IconPlaylist.vue'
 
 const store = usePlayerStore()
 </script>
-
-<style lang="less">
-.player {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100vw;
-  height: 70px;
-  position: fixed;
-  bottom: 0;
-  border-top: 1px solid #eee;
-  background-color: var(--footer-bg-color);
-  z-index: 9999 !important;
-  padding: 0.5rem 1rem;
-  cursor: default;
-
-  .left {
-    width: 25%;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-
-    .el-image {
-      height: 3rem;
-      width: 3rem;
-      border-radius: 0.5rem;
-      margin-right: 1rem;
-    }
-
-    .name {
-      font-size: 14px;
-    }
-  }
-
-  .center {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .right {
-    width: 25%;
-    display: flex;
-    align-items: center;
-    padding-left: 6rem;
-
-    .playlist {
-      cursor: pointer;
-      position: absolute;
-      right: 2.5rem;
-
-      .el-badge svg {
-        font-size: 20px;
-      }
-    }
-  }
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="discover">
+  <div class="flex flex-col gap-4">
     <!-- 选择标签 -->
     <Tabs :tabs="tabs" />
     <!-- Vue3中的 keep-alive让路由组件不被销毁使用方式的变化 -->

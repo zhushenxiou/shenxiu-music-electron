@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import './var.css';
 @import './element-custom.css';
 
 /* 全局重置样式
@@ -51,6 +50,25 @@ body,
   }
 }
 
+/* 美化浏览器滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #909399;
+}
+
 /* 美化进度条 */
 .el-slider {
   width: 100%;
@@ -67,30 +85,5 @@ body,
   background-color: #fdf5f5;
 }
 
-/* 美化滚动条 */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
 
-::-webkit-scrollbar-track {
-  width: 4px;
-  background: rgba(16, 31, 28, 0.1);
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em;
-}
 
-::-webkit-scrollbar-thumb {
-  background-clip: padding-box;
-  min-height: 28px;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em;
-  transition: background-color 0.3s;
-  cursor: pointer;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(144, 147, 153, 0.3);
-}

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoading" class="flex flex-col gap-8 px-4">
+  <div v-loading="isLoading" class="flex flex-col gap-8">
     <!-- 推荐歌单 -->
     <div class="w-full">
       <!-- 标题 -->

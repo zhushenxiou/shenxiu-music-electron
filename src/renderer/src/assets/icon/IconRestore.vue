@@ -21,7 +21,7 @@
       y="2.5"
       width="8"
       height="8"
-      fill="var(--header-bg-color, #f7f9fc)"
+      fill="#f7f9fc"
       stroke="currentColor"
       stroke-width="1.2"
     />
